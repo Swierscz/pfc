@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="final_project">
+<head>
+    <meta charset="UTF-8">
+    <title>Main page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script type="text/javascript" src="app.module.js"></script>
+</head>
+
+
+
+
+<body ng-controller="RandomNumberController">
+
+<div>
+
+<form ng-submit="myFunc()">
+<label>Ilość losowych liczb:</label> <br>
+<input type="number" ng-model = "number" placeholder=
+"Zakres od 1 do 30" name="quantity" min="1" max="30">  <br>
+<input type="submit">
+</form>
+
+</div>
+
+kutacz1 <br>
+<ul>
+    <li ng-repeat="random in randoms">
+        {{random}}
+        dupa
+    </li>
+</ul>
+kutacz2<br>
+{{$scope.dupa}}
+
+
+
+<script>
+var finalProject = angular.module('final_project', []);
+
+finalProject.controller('RandomNumberController', function RandomNumberController($scope,$http) {
+var self = this;
+$http.get('api/random').then(function (response) {
+self.randoms = response.data;
+$scope.randoms = response.data;
+$scope.myFunc = function () {
+    self.randoms = response.data;
+    $scope.randoms = response.data;
+    $scope.dupa = "dupa";
+}
+});
+});
+</script>
+
+
+</body>
+</html>
+
+<script>
+    var app = angular.module("final_project", []);
+    app.controller("myCtrl", function ($scope) {
+        $scope.myTxt = "You have not yet clicked submit";
+        $scope.myFunc = function () {
+            $scope.myTxt = "You clicked submit!";
+        }
+    });
+</script>
