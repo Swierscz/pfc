@@ -3,65 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <title>Main page</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script type="text/javascript" src="js/angular.js"></script>
     <script type="text/javascript" src="app.module.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel = "stylesheet" href="index.css" type="text/css"/>
 </head>
-
-
 
 
 <body ng-controller="RandomNumberController">
 
-<div>
+<div id="mainContainer" style="padding-left: 40px; padding-top: 40px">
+    <div>
+        <form ng-submit="myFunc(toDrawNumber)">
+            <label>Ilość losowych liczb:</label> <br>
+            <div style="float:left">
+                <input type="number" name="toDrawNumber" ng-model="toDrawNumber" placeholder=
+                        "Zakres od 1 do 30" name="quantity" min="1" max="30"> <br>
+            </div>
+            <input type="submit" class="btn btn-primary btn-sm" style="margin-left: 10px; clear:both">
+            <div style="clear:both"></div>
+        </form>
 
-<form ng-submit="myFunc()">
-<label>Ilość losowych liczb:</label> <br>
-<input type="number" ng-model = "number" placeholder=
-"Zakres od 1 do 30" name="quantity" min="1" max="30">  <br>
-<input type="submit">
-</form>
-
+        <ul id="myCustomList">
+            <li ng-repeat="random in randoms track by $index">
+                {{random}}
+            </li>
+        </ul>
+    </div>
+    <div style = "margin-top: 20px">
+        <label>Wartość średnia:</label> <br>
+        <input type="text" name="avgValue" ng-model="avgValue" readonly="readonly">
+        <button type = "button" class="btn btn-primary btn-sm"
+                ng-click="calculateAvgValue()" style = "margin-left: 10px">
+            Oblicz AVG
+        </button>
+    </div>
 </div>
 
-kutacz1 <br>
-<ul>
-    <li ng-repeat="random in randoms">
-        {{random}}
-        dupa
-    </li>
-</ul>
-kutacz2<br>
-{{$scope.dupa}}
-
-
-
 <script>
-var finalProject = angular.module('final_project', []);
+    var finalProject = angular.module('final_project', []);
 
-finalProject.controller('RandomNumberController', function RandomNumberController($scope,$http) {
-var self = this;
-$http.get('api/random').then(function (response) {
-self.randoms = response.data;
-$scope.randoms = response.data;
-$scope.myFunc = function () {
-    self.randoms = response.data;
-    $scope.randoms = response.data;
-    $scope.dupa = "dupa";
-}
-});
-});
+    finalProject.controller('RandomNumberController', function RandomNumberController($scope, $http) {
+        $scope.myFunc = function (toDrawNumber) {
+            $http.get('/api/random', {headers: {'List_lenght': toDrawNumber}})
+                .then(function (response) {
+                    $scope.randoms = response.data;
+                    $scope.avgValue = "";
+                });
+        }
+
+        $scope.calculateAvgValue = function () {
+            var config = {headers: {'Content-Type': 'application/json'}}
+            $http.post('api/generated-numbers', angular.toJson($scope.randoms), config)
+                .then(function successCallback(response) {
+                    $http.get('/api/avg-value').then(function (response) {
+                        $scope.avgValue = response.data;
+                    });
+            })
+
+        }
+
+    });
+
+
 </script>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
 </body>
 </html>
-
-<script>
-    var app = angular.module("final_project", []);
-    app.controller("myCtrl", function ($scope) {
-        $scope.myTxt = "You have not yet clicked submit";
-        $scope.myFunc = function () {
-            $scope.myTxt = "You clicked submit!";
-        }
-    });
-</script>

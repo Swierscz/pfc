@@ -10,9 +10,9 @@ import java.util.Random;
 public class NumberGeneratorServiceImpl implements NumberGeneratorService {
     Random random = new Random();
 
-    public List<Integer> getListFilledWithRandomNumbers(){
-        ArrayList<Integer> list = new ArrayList<>(10);
-        for(int i = 0; i< 10; i++){
+    public List<Integer> getListFilledWithRandomNumbers(int lenght){
+        ArrayList<Integer> list = new ArrayList<>(lenght);
+        for(int i = 0; i< lenght; i++){
             list.add(random.nextInt(100));
         }
         return list;
